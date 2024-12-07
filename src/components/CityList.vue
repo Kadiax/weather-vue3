@@ -1,10 +1,13 @@
 <template>
-  <div v-for="city in savedCities" :key="city.id">
-    <CityCard :city="city" @click="goToCityView(city)" />
+  <div class="saved-cities">
+    <div v-for="city in savedCities" :key="city.id">
+      <CityCard :city="city" @click="goToCityView(city)" />
+    </div>
+    <p v-if="savedCities.length === 0">
+      No locations added. To start tracking a location, search in the field
+      above.
+    </p>
   </div>
-  <p v-if="savedCities.length === 0">
-    No locations added. To start tracking a location, search in the field above.
-  </p>
 </template>
 
 <script setup>
@@ -48,3 +51,19 @@ const goToCityView = (city) => {
 };
 await getCities();
 </script>
+<style>
+.saved-cities {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 25px 39px;
+}
+
+/*Tablets Laptops Desktops*/
+@media (max-width: 1440px) {
+  .saved-cities {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 15px 12px;
+  }
+}
+</style>

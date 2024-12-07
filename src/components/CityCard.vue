@@ -1,35 +1,117 @@
 <template>
-  <div
-    class="flex py-6 px-3 bg-weather-secondary rounded-md shadow-md cursor-pointer"
-  >
-    <div class="flex flex-col flex-1">
-      <h2 class="text-3xl">{{ city.city }}</h2>
-      <h3>{{ city.state }}</h3>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <p class="text-3xl self-end">
-        {{ Math.round(city.weather.main.temp) }}&deg;
-      </p>
-      <div class="flex gap-2">
-        <span class="text-xs">
-          H:
-          {{ Math.round(city.weather.main.temp_max) }}&deg;
-        </span>
-        <span class="text-xs">
-          L:
-          {{ Math.round(city.weather.main.temp_min) }}&deg;
-        </span>
+  <div class="card">
+    <div class="weather-info">
+      <div class="figures">
+        <div class="today-temp">
+          {{ Math.round(city.weather.main.temp) }}&deg;
+        </div>
+        <div class="today-high-low">
+          H{{ Math.round(city.weather.main.temp_max) }}&deg; L{{
+            Math.round(city.weather.main.temp_min)
+          }}&deg;
+        </div>
       </div>
+      <div class="city-name">{{ city.city }}</div>
     </div>
+    <img
+      :src="`http://openweathermap.org/img/wn/${city.weather.weather[0].icon}@2x.png`"
+    />
   </div>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   city: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
   },
 });
 </script>
+<style>
+.saved-cities .card {
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  border-radius: 25px;
+  width: auto;
+  height: 134px;
+  padding: 18px 15px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.saved-cities .card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.saved-cities .weather-info {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 12px;
+  width: auto;
+}
+
+.saved-cities .figures {
+  display: flex;
+}
+
+.saved-cities .figures .today-temp {
+  color: var(--color-text-primary);
+  font-size: 48px;
+  font-family: Inter;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.saved-cities .figures .today-high-low {
+  align-self: end;
+  color: var(--color-text-secondary);
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.saved-cities .city-name {
+  align-self: stretch;
+  font-family: Inter;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.saved-cities .card img {
+  align-self: end;
+  width: 56px;
+  height: 56px;
+}
+
+/*Tablets Laptops Desktops*/
+@media (max-width: 1440px) {
+  .saved-cities .card {
+    width: auto;
+    height: 134px;
+    padding: 18px 15px;
+  }
+
+  .saved-cities .figures .today-temp {
+    font-size: 40px;
+  }
+
+  .saved-cities .figures .today-high-low {
+    font-size: 10px;
+  }
+}
+
+/*Mobiles*/
+@media (min-width: 360px) and (max-width: 700px) {
+  .home .saved-cities {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+</style>

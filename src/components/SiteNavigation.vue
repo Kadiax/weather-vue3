@@ -1,91 +1,189 @@
 <template>
-  <header class="sticky top-0 bg-weather-primary shadow-lg">
-    <nav
-      class="container flex flex-col sm:flex-row items-center gap-4 text-white py-6"
-    >
-      <RouterLink :to="{ name: 'home' }">
-        <div class="flex items-center gap-3">
-          <i class="fa-solid fa-sun text-2xl"></i>
-          <p class="text-2xl">The Local Weather</p>
-        </div>
-      </RouterLink>
-      <div class="flex gap-3 flex-1 justify-end">
-        <i
-          class="fa-solid fa-circle-info text-xl hover:text-weather-secondary duration-150 cursor-pointer"
-          @click="toogleModal"
-        ></i>
-        <i
-          class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
-          @click="addCity()"
-          v-if="route.query.preview"
-        ></i>
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <a href="#" class="logo">
+      <img src="../assets/images/Logo.svg" alt="" />
+      <div class="label">
+        <span>The Local</span><br />
+        <span>Weather</span>
       </div>
-      <BaseModal :modalActive="modalActive" @close-modal="toogleModal">
-        <div class="text-black">
-          <h1 class="text-2xl mb-1">About:</h1>
-          <p class="mb-4">
-            The Local Weather allows you to track the current and future weather
-            of cities of your choosing.
-          </p>
-          <h2 class="text-2xl">How it works:</h2>
-          <ol class="list-decimal list-inside mb-4">
-            <li>
-              Search for your city by entering the name into the search bar.
-            </li>
-            <li>
-              Select a city within the results, this will take you to the
-              current weather for your selection.
-            </li>
-            <li>
-              Track the city by clicking on the "+" icon in the top right. This
-              will save the city to view at a later time on the home page.
-            </li>
-          </ol>
+    </a>
 
-          <h2 class="text-2xl">Removing a city</h2>
-          <p>
-            If you no longer wish to track a city, simply select the city within
-            the home page. At the bottom of the page, there will be am option to
-            delete the city.
-          </p>
+    <div class="menu-icon" @click="toggleMenu">
+      <img src="../assets/images/MenuIcon.svg" alt="Menu Icon" />
+    </div>
+  </nav>
+
+  <div :class="['mobile-nav-menu', { active: isMenuActive }]">
+    <ul class="menu-items">
+      <li @click="closeMenu">
+        <RouterLink :to="{ name: 'home' }"> <a href="#">Home</a></RouterLink>
+      </li>
+      <li @click="closeMenu">
+        <RouterLink :to="{ name: 'about' }">
+          <a href="#about">About</a>
+        </RouterLink>
+      </li>
+    </ul>
+  </div>
+
+  <!-- End of Mobile Navigation -->
+  <nav class="desktop-nav">
+    <RouterLink :to="{ name: 'home' }">
+      <a href="#" class="logo">
+        <img src="../assets/images/Logo.svg" alt="" />
+        <div class="label">
+          <span>The Local</span><br />
+          <span>Weather</span>
         </div>
-      </BaseModal>
-    </nav>
-  </header>
+      </a>
+    </RouterLink>
+    <ul class="menu-items">
+      <li>
+        <RouterLink :to="{ name: 'home' }">
+          <i class="fa-solid fa-home active"></i>
+        </RouterLink>
+      </li>
+
+      <li>
+        <RouterLink :to="{ name: 'about' }">
+          <i class="fa-solid fa-circle-info"></i>
+        </RouterLink>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- End of Desktop Navigation -->
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { RouterLink, useRoute, useRouter } from "vue-router";
-import { uid } from "uid";
-import BaseModal from "./BaseModal.vue";
 
-const modalActive = ref(null);
-const savedCities = ref([]);
-const route = useRoute();
-const router = useRouter();
+// Reactive state to track menu visibility
+const isMenuActive = ref(false);
 
-const toogleModal = () => {
-  modalActive.value = !modalActive.value;
+// Toggle the menu
+const toggleMenu = () => {
+  isMenuActive.value = !isMenuActive.value;
 };
-const addCity = () => {
-  if (localStorage.getItem("savedCities")) {
-    savedCities.value = JSON.parse(localStorage.getItem("savedCities"));
-  }
-  const locationObj = {
-    id: uid(),
-    state: route.params.state,
-    city: route.params.city,
-    coords: {
-      lat: route.query.lat,
-      lng: route.query.lng,
-    },
-  };
-  savedCities.value.push(locationObj);
-  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
-  let query = Object.assign({}, route.query);
-  delete query.preview;
-  query.id = locationObj.id;
-  router.replace({ query });
+
+// Close the menu when an item is clicked
+const closeMenu = () => {
+  isMenuActive.value = false;
 };
 </script>
+
+<style>
+.desktop-nav {
+  background: var(--color-bg-secondary);
+  width: 87px;
+  height: 95vh;
+  border-radius: 30px;
+  position: fixed;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.logo .label {
+  text-align: center;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-family: Inter;
+  font-weight: 400;
+}
+
+.desktop-nav .menu-items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 153px;
+  gap: 35px;
+  margin-top: 60px;
+}
+
+.desktop-nav .menu-items i {
+  color: var(--color-text-secondary);
+  font-size: 25px;
+  transition: color 0.3s ease; /* Smooth transition */
+}
+
+.desktop-nav .menu-items i:hover {
+  color: var(--color-brand-primary);
+}
+
+/* Mobile Nav */
+.mobile-nav {
+  display: none;
+}
+
+.mobile-nav-menu {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  background: black;
+  right: 0;
+  z-index: 200;
+
+  opacity: 0;
+  pointer-events: none;
+  top: -100%;
+  transition: 400ms;
+}
+
+.mobile-nav-menu.active {
+  opacity: 1;
+  pointer-events: auto;
+  top: 0;
+}
+
+.mobile-nav-menu .menu-items {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-nav-menu .menu-items li {
+  margin: 20px 0;
+}
+
+.mobile-nav-menu .menu-items li a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+/*Tablets*/
+@media (max-width: 1024px) {
+  .mobile-nav {
+    background: var(--color-bg-secondary);
+    display: flex;
+    justify-content: space-between;
+    border-radius: 30px;
+    padding: 2px 15px;
+    margin-top: 25px;
+    margin-left: 14px;
+    margin-right: 14px;
+    position: sticky;
+  }
+
+  .logo {
+    flex-direction: row;
+    margin-top: 0px;
+  }
+
+  .menu-icon {
+    align-self: center;
+  }
+}
+</style>

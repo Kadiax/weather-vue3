@@ -1,16 +1,18 @@
 <template>
-  <main class="container text-white">
-    <div class="pt-4 mb-8 relative">
-      <input
-        v-model="searchQuery"
-        @input="getSearchResults"
-        type="text"
-        placeholder="Search for a city or state"
-        class="py-2 px-1 w-full bg-transparent border-b focus:border-weather-secondary focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]"
-      />
-      <ul
-        class="absolute bg-weather-secondary text-white w-full shadow-md px-1 top-[66px]"
-      >
+  <div class="page-content home">
+    <h2 class="main-title">Home</h2>
+
+    <div class="search">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input
+          v-model="searchQuery"
+          @input="getSearchResults"
+          type="text"
+          placeholder="Search for a city or state"
+        />
+      </div>
+      <ul class="search-results">
         <p v-if="searchError">Sorry, went wrong please try again.</p>
         <p v-if="!searchError && mapBoxSearchResults?.length === 0">
           No results match your query, try a different term.
@@ -27,15 +29,14 @@
         </template>
       </ul>
     </div>
-    <div class="flex flex-col gap-4">
-      <Suspense>
-        <CityList />
-        <template #fallback>
-          <CityCardSkeleton />
-        </template>
-      </Suspense>
-    </div>
-  </main>
+
+    <Suspense>
+      <CityList />
+      <template #fallback>
+        <CityCardListSkeleton />
+      </template>
+    </Suspense>
+  </div>
 </template>
 
 <script setup>
@@ -43,7 +44,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import CityList from "@/components/CityList.vue";
-import CityCardSkeleton from "@/components/CityCardSkeleton.vue";
+import CityCardListSkeleton from "@/components/CityCardListSkeleton.vue";
 
 const router = useRouter();
 const mapBoxAPIKey = import.meta.env.VITE_MAP_BOX_API_KEY;
@@ -83,3 +84,64 @@ const previewCity = (searchResult) => {
   });
 };
 </script>
+<style>
+/*Home page*/
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center the container vertically */
+  align-items: center; /* Center the container horizontally */
+}
+
+.home .search-bar {
+  background: var(--color-bg-secondary);
+  width: 518px;
+  height: 51px;
+  display: inline-flex;
+  border-radius: 50px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 24px;
+}
+
+.home .search-bar i {
+  font-size: 18px;
+  margin-left: 20px;
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  outline: none;
+  margin-left: 10px;
+  color: var(--color-text-secondary);
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-results {
+  width: 518px;
+  position: fixed;
+  background-color: var(--color-bg-secondary);
+  padding-left: 15px;
+}
+
+.search {
+  margin-top: 60px;
+  border-radius: 50px;
+  background-color: var(--color-bg-secondary);
+}
+
+/*Mobiles*/
+@media (min-width: 360px) and (max-width: 700px) {
+  .home .search {
+    width: 100%;
+    margin-top: 25px;
+  }
+
+  .home .search-bar,
+  .home .search-results {
+    width: 93%;
+  }
+}
+</style>
