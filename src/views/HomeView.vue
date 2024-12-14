@@ -43,8 +43,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import CityList from "@/components/CityList.vue";
-import CityCardListSkeleton from "@/components/CityCardListSkeleton.vue";
+import CityList from "@/components/homeView/CityList.vue";
+import CityCardListSkeleton from "@/components/homeView/skeleton/CityCardListSkeleton.vue";
 
 const router = useRouter();
 const mapBoxAPIKey = import.meta.env.VITE_MAP_BOX_API_KEY;

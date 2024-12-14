@@ -25,8 +25,8 @@
 </template>
 
 <script setup>
-import AsyncCityView from "@/components/AsyncCityView.vue";
-import CityViewSkeleton from "@/components/CityViewSkeleton.vue";
+import AsyncCityView from "@/components/cityView/AsyncCityView.vue";
+import CityViewSkeleton from "@/components/cityView/skeleton/CityViewSkeleton.vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { uid } from "uid";

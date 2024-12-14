@@ -2,275 +2,20 @@
   <div class="overview-content">
     <div class="figures">
       <div class="main">
-        <div class="temp-card">
-          <div class="data">
-            <div class="weather">
-              <div class="location">
-                <div class="city-name">{{ route.params.city }}</div>
-                <div class="date-time">
-                  {{
-                    new Date(weatherData.currentTime).toLocaleDateString(
-                      "en-us",
-                      {
-                        weekday: "short",
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      }
-                    )
-                  }}<br />
-                  {{
-                    new Date(weatherData.currentTime).toLocaleTimeString(
-                      "en-us",
-                      {
-                        timeStyle: "short",
-                      }
-                    )
-                  }}
-                </div>
-              </div>
-              <div class="temperature">
-                <div class="temp-details">
-                  <div class="temp-value">
-                    {{ Math.round(weatherData.main.temp) }}
-                    <span class="temp-deg">&deg;</span>
-                    <span class="temp-unit"> C</span>
-                  </div>
-                  <div class="cloud-icon">
-                    <img
-                      src="../assets/images/cloud_svgrepo-big.com.svg"
-                      alt="cloud"
-                    />
-                  </div>
-                </div>
-                <div class="high-low">
-                  High: {{ Math.round(weatherData.main.temp_max) }}&deg; Low:
-                  {{ Math.round(weatherData.main.temp_min) }}&deg;
-                </div>
-              </div>
-            </div>
-            <div class="icon">
-              <img
-                class="weather-icon"
-                :src="`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`"
-                alt="weather-icon"
-              />
-              <div class="description">
-                <div class="description-title">
-                  {{ toCapitalize(weatherData.weather[0].description) }}
-                </div>
-                <div class="feels-like">
-                  Feels Like {{ Math.round(weatherData.main.feels_like) }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <img
-            class="small-cloud-icon"
-            src="../assets/images/cloud_svgrepo.com.svg"
-            alt="cloud"
-          />
-        </div>
-        <div class="hourly-card">
-          <div class="title">Hourly Weather (5 days)</div>
-          <div class="weather-cards">
-            <div
-              class="weather-card"
-              v-for="hourData in weatherData.hours"
-              :key="hourData.dt"
-            >
-              <div class="weather-details">
-                <div class="weather-time">
-                  {{
-                    new Date(hourData.currentTime).toLocaleDateString("en-us", {
-                      weekday: "short",
-                      day: "2-digit",
-                      month: "short",
-                    })
-                  }}<br />
-                  {{
-                    new Date(hourData.currentTime).toLocaleTimeString("en-us", {
-                      hour: "numeric",
-                    })
-                  }}
-                </div>
-                <img
-                  class="weather-icon"
-                  :src="`http://openweathermap.org/img/wn/${hourData.weather[0].icon}@2x.png`"
-                  alt="Weather Icon"
-                />
-                <div class="weather-temp">
-                  {{ Math.round(hourData.main.temp) }}&deg;
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="sun-card">
-          <div class="day-info-container">
-            <div class="day-info">
-              <div class="label">Sunrise</div>
-              <div class="time-info">
-                <div class="time">
-                  {{
-                    new Date(weatherData.sys.sunrise)
-                      .toLocaleTimeString("en-us", {
-                        timeStyle: "short",
-                      })
-                      .split(" ")[0]
-                  }}
-                </div>
-                <div class="period">
-                  {{
-                    new Date(weatherData.sys.sunrise)
-                      .toLocaleTimeString("en-us", {
-                        timeStyle: "short",
-                      })
-                      .split(" ")[1]
-                  }}
-                </div>
-              </div>
-            </div>
-            <div class="day-info">
-              <div class="label">Sunset</div>
-              <div class="time-info">
-                <div class="time">
-                  {{
-                    new Date(weatherData.sys.sunset)
-                      .toLocaleTimeString("en-us", {
-                        timeStyle: "short",
-                      })
-                      .split(" ")[0]
-                  }}
-                </div>
-                <div class="period">
-                  {{
-                    new Date(weatherData.sys.sunset)
-                      .toLocaleTimeString("en-us", {
-                        timeStyle: "short",
-                      })
-                      .split(" ")[1]
-                  }}
-                </div>
-              </div>
-            </div>
-            <div class="day-info">
-              <div class="label">Length of day</div>
-              <div class="time-info">
-                <div class="length">{{ weatherData.sys.dayLength }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TempCard :city="route.params.city" :weatherData="weatherData" />
+        <HourlyCard :weatherData="weatherData" />
+        <SunCard :weatherData="weatherData" />
       </div>
       <div class="side">
-        <div class="highlight-card">
-          <div class="title">Today Highlight</div>
-          <div class="cards">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-title">Pressure</div>
-                <div class="header-icon">
-                  <img
-                    src="../assets/images/pressure-icon.svg"
-                    alt="pressure-icon"
-                  />
-                </div>
-              </div>
-              <div class="card-value">
-                <span class="value-number">{{
-                  weatherData.main.pressure
-                }}</span>
-                <span class="value-unit">hpa</span>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <div class="header-title">Air Quality Index</div>
-                <div class="header-icon">
-                  <img
-                    class="air-img"
-                    src="../assets/images/aqi.svg"
-                    alt="aqi-icon"
-                  />
-                </div>
-              </div>
-              <div class="aqi card-value">
-                <span class="value-number">{{
-                  polluantData.list[0].main.aqi
-                }}</span>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <div class="header-title">Wind Speed</div>
-                <div class="header-icon">
-                  <img src="../assets/images/wind-icon.svg" alt="wind-icon" />
-                </div>
-              </div>
-              <div class="card-value">
-                <span class="value-number">{{ weatherData.wind.speed }}</span>
-                <span class="value-unit">m/s</span>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <div class="header-title">Humidity</div>
-                <div class="header-icon">
-                  <img
-                    src="../assets/images/humidity-icon.svg"
-                    alt="humidity-icon"
-                  />
-                </div>
-              </div>
-              <div class="humidity card-value">
-                <span class="value-number">{{
-                  weatherData.main.humidity
-                }}</span>
-                <span class="value-unit">%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="pollution-card">
-          <div class="title">Pollution</div>
-          <div
-            class="polluant"
-            v-for="(value, name) in polluantData.list[0].components"
-            :key="name"
-          >
-            <div class="tooltip-container">
-              <p class="name tooltip-trigger">
-                {{ toCapitalize(name.replace("_", ".")) }}
-                <span class="question tooltip-icon">?</span>
-              </p>
-
-              <!-- Tooltip -->
-              <div class="tooltip-content">
-                <h2>{{ polluantDetails[name].fullName }}</h2>
-              </div>
-            </div>
-
-            <progress
-              class="progress-bar"
-              :value="(value / polluantDetails[name].thresholds.poor) * 100"
-              max="100"
-              :style="getPollutantColor(name, value)"
-            ></progress>
-            <div class="values">
-              <div class="value">{{ value }}</div>
-              <div class="separator">/</div>
-              <div class="value-max">
-                {{ polluantDetails[name].thresholds.poor }}
-              </div>
-              <div class="unit">μg/m3</div>
-            </div>
-          </div>
-        </div>
+        <HighlightCard
+          :weatherData="weatherData"
+          :aqi="polluantData.list[0].main.aqi"
+        />
+        <PollutionCard :polluantData="polluantData" />
       </div>
     </div>
-    <div v-if="!route.query.preview" class="remove-button" @click="removeCity">
-      <div class="button remove">
+    <div v-if="!route.query.preview" class="remove-button">
+      <div class="button remove" @click="removeCity">
         <span><i class="fa-solid fa-trash-can"></i></span>
         <span class="title">Remove</span>
       </div>
@@ -282,45 +27,16 @@
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
+import TempCard from "../cityView/TempCard.vue";
+import HourlyCard from "../cityView/HourlyCard.vue";
+import SunCard from "../cityView/SunCard.vue";
+import HighlightCard from "../cityView/HighlightCard.vue";
+import PollutionCard from "../cityView/PollutionCard.vue";
 
 const route = useRoute();
 const router = useRouter();
 const openweathermapAPIKey = import.meta.env.VITE_OPEN_WEATHER_MAP_API_KEY;
 
-const polluantDetails = {
-  co: {
-    fullName: "Carbon monoxide",
-    thresholds: { good: 4400, fair: 9400, moderate: 12400, poor: 15400 },
-  },
-  no: {
-    fullName: "Nitrogen monoxide",
-    thresholds: { good: 50, fair: 70, moderate: 80, poor: 100 },
-  },
-  no2: {
-    fullName: "Nitrogen dioxide",
-    thresholds: { good: 40, fair: 70, moderate: 150, poor: 200 },
-  },
-  o3: {
-    fullName: "Ozone",
-    thresholds: { good: 60, fair: 100, moderate: 140, poor: 180 },
-  },
-  so2: {
-    fullName: "Sulphur dioxide",
-    thresholds: { good: 20, fair: 80, moderate: 250, poor: 350 },
-  },
-  pm2_5: {
-    fullName: "Fine particles matter",
-    thresholds: { good: 10, fair: 25, moderate: 50, poor: 75 },
-  },
-  pm10: {
-    fullName: "Coarse particulate matter",
-    thresholds: { good: 20, fair: 50, moderate: 100, poor: 200 },
-  },
-  nh3: {
-    fullName: "Ammonia",
-    thresholds: { good: 50, fair: 150, moderate: 100, poor: 200 },
-  },
-};
 const getWeatherData = async () => {
   try {
     const weatherData = await axios.get(
@@ -385,26 +101,12 @@ const getPolluants = async () => {
     console.log(error);
   }
 };
-const getPollutantColor = (name, value) => {
-  const thresholds = polluantDetails[name].thresholds;
 
-  if (value <= thresholds.fair) {
-    return { "--progress-color": "var(--color-text-success)" }; // good
-  } else if (value >= thresholds.fair && value <= thresholds.moderate) {
-    return { "--progress-color": "var(--color-text-warning-secondary)" }; // moderate
-  } else {
-    return { "--progress-color": "var(--color-text-error)" }; // poor
-  }
-};
 const removeCity = () => {
   const cities = JSON.parse(localStorage.getItem("savedCities"));
   const updatedCities = cities.filter((city) => city.id !== route.query.id);
   localStorage.setItem("savedCities", JSON.stringify(updatedCities));
   router.push({ name: "home" });
-};
-
-const toCapitalize = (word) => {
-  return String(word).charAt(0).toUpperCase() + String(word).slice(1);
 };
 
 const weatherData = await getWeatherData();
